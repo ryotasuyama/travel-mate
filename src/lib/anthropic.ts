@@ -1,4 +1,5 @@
 import { TravelFormInput, TravelPlan } from '@/types/travel';
+import { Message } from '@anthropic-ai/sdk/src/resources/index.js';
 
 export function generateTravelPrompt(input: TravelFormInput): string {
   return `あなたは旅行プランを提案する専門家です。
@@ -52,14 +53,18 @@ ${JSON.stringify(input, null, 2)}
 }`;
 }
 
-export function parseTravelPlanResponse(response: any): TravelPlan {
+export function parseTravelPlanResponse(response: Message): TravelPlan {
   try {
     // レスポンスから必要なテキスト部分を取得
-    const content = response.content[0].text;
+    const text = response.content.filter(block => block.type === 'text')[0]?.text;
+    if (!text) {
+      throw new Error('No text content found in response');
+    }
     // JSON文字列をパースして型チェック
-    const plan = JSON.parse(content) as TravelPlan;
+    const plan = JSON.parse(text) as TravelPlan;
     return plan;
-  } catch (error) {
+  } catch {
+    console.error('Failed to parse travel plan response:');
     throw new Error('Failed to parse travel plan response');
   }
 }

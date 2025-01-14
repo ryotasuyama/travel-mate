@@ -39,7 +39,8 @@ export function validateTravelInput(input: TravelFormInput): boolean {
     }
 
     return true;
-  } catch (error) {
+  } catch {
     return false;
   }
 }
+// (_error: unknown)
