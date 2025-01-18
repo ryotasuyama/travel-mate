@@ -1,4 +1,3 @@
-// src/components/travel/TravelResult/Schedule.tsx
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { TravelPlan } from '@/types/travel';
