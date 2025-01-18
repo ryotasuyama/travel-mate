@@ -49,6 +49,14 @@ export interface TravelFormInput {
           name: string;
           cuisine_type: string;
         };
+        accommodation?: {
+          hotelName: string;
+          pricePerRoom: number;
+          access: string;
+          type: string;
+          bookingUrl: string;
+          reviewScore: number;
+        };
       }>;
     }>;
   }
