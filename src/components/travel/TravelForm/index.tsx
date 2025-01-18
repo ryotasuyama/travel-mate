@@ -1,4 +1,3 @@
-// src/components/travel/TravelForm/index.tsx
 import React, { useState } from 'react';
 import { TravelFormInput, TravelPlan } from '@/types/travel';
 import { FormState } from './types';

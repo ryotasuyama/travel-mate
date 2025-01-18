@@ -1,4 +1,3 @@
-// src/components/travel/TravelResult/index.tsx
 import React from 'react';
 import { TravelPlan } from '@/types/travel';
 import { PlanOverview } from './PlanOverview';

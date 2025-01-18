@@ -43,4 +43,3 @@ export function validateTravelInput(input: TravelFormInput): boolean {
     return false;
   }
 }
-// (_error: unknown)

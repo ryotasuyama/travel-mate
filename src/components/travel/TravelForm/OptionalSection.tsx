@@ -1,5 +1,4 @@
 import React from 'react';
-// import { Select } from '../shared';
 import { Select } from '../../travel/shared';
 import { FormSectionProps } from './types';
 

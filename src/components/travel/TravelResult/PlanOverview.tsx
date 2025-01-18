@@ -1,4 +1,3 @@
-// src/components/travel/TravelResult/PlanOverview.tsx
 import React from 'react';
 
 interface PlanOverviewProps {
