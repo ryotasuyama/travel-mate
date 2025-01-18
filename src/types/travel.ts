@@ -2,7 +2,7 @@
 export interface TravelFormInput {
   departure: string;
   destination?: string;
-  gender: 'male' | 'female' | 'other';
+  gender: "male" | "female" | "other";
   group: {
     adults: number;
     children: number;
@@ -11,38 +11,38 @@ export interface TravelFormInput {
     nights: number;
     days: number;
   };
-  transportation: 'car' | 'public';
-  accommodation: 'hotel' | 'ryokan' | 'none';
+  transportation: "car" | "public";
+  accommodation: "hotel" | "ryokan" | "none";
   activities?: Array<
-    | 'active'
-    | 'relaxed'
-    | 'food'
-    | 'culture'
-    | 'unique'
-    | 'adventure'
-    | 'sports'
-    | 'outdoor'
-    | 'sightseeing'
-    | 'onsen'
-    | 'luxury_hotel'
-    | 'beach_relax'
-    | 'massage'
-    | 'local_gourmet'
-    | 'cafe_tour'
-    | 'winery'
-    | 'cooking'
-    | 'art'
-    | 'history'
-    | 'music'
-    | 'photography'
-    | 'shopping'
-    | 'nature'
-    | 'family'
-    | 'romantic'
-    | 'challenge'
-    | 'retreat'
-    | 'volunteer'
-    | 'spontaneous'
+    | "active"
+    | "relaxed"
+    | "food"
+    | "culture"
+    | "unique"
+    | "adventure"
+    | "sports"
+    | "outdoor"
+    | "sightseeing"
+    | "onsen"
+    | "luxury_hotel"
+    | "beach_relax"
+    | "massage"
+    | "local_gourmet"
+    | "cafe_tour"
+    | "winery"
+    | "cooking"
+    | "art"
+    | "history"
+    | "music"
+    | "photography"
+    | "shopping"
+    | "nature"
+    | "family"
+    | "romantic"
+    | "challenge"
+    | "retreat"
+    | "volunteer"
+    | "spontaneous"
   >;
   budget?: number;
   travel_month?: number;
@@ -67,9 +67,9 @@ export interface TravelPlan {
   }>;
   schedule: Array<{
     day: string;
-    date: string;
+    date: string; // YYYY-MM-DD形式
     timeline: Array<{
-      time: string;
+      time: string; // HH:mm形式
       activity: string;
       location: string;
       duration: string;
@@ -80,7 +80,7 @@ export interface TravelPlan {
         cuisine_type: string;
       };
     }>;
-  }>;
+  }>; // 閉じ括弧を追加
 }
 
 // APIエラーレスポンスの型定義

@@ -1,6 +1,7 @@
 import React from 'react';
 import { Calendar } from 'lucide-react';
 import { TravelPlan } from '@/types/travel';
+import { Accommodation } from './Accommodation';
 
 interface ScheduleProps {
   schedule: TravelPlan['schedule'];
@@ -37,6 +38,11 @@ export const Schedule: React.FC<ScheduleProps> = ({ schedule }) => {
                       )}
                       {event.notes && (
                         <p className="text-sm text-slate-500 mt-1">※ {event.notes}</p>
+                      )}
+                      {event.accommodation && (
+                        <div className="mt-2">
+                          <Accommodation timeline={[event]} />
+                        </div>
                       )}
                     </div>
                   </div>
