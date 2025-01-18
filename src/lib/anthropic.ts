@@ -1,5 +1,22 @@
 import { TravelFormInput, TravelPlan } from '@/types/travel';
-import { Message } from '@anthropic-ai/sdk/src/resources/index.js';
+import { Anthropic } from '@anthropic-ai/sdk';
+
+interface MessageContent {
+  type: string;
+  text?: string;
+}
+
+interface Message {
+  id: string;
+  content: MessageContent[];
+  role: string;
+  model: string;
+}
+
+type MessageContentText = {
+  type: 'text';
+  text: string;
+};
 
 export function generateTravelPrompt(input: TravelFormInput): string {
   return `あなたは旅行プランを提案する専門家です。
@@ -56,15 +73,44 @@ ${JSON.stringify(input, null, 2)}
 export function parseTravelPlanResponse(response: Message): TravelPlan {
   try {
     // レスポンスから必要なテキスト部分を取得
-    const text = response.content.filter(block => block.type === 'text')[0]?.text;
+    const text = response.content.filter((block: MessageContent): block is MessageContentText => 
+      block.type === 'text'
+    )[0]?.text;
     if (!text) {
       throw new Error('No text content found in response');
     }
-    // JSON文字列をパースして型チェック
-    const plan = JSON.parse(text) as TravelPlan;
-    return plan;
-  } catch {
-    console.error('Failed to parse travel plan response:');
-    throw new Error('Failed to parse travel plan response');
+
+    // JSONの開始位置と終了位置を探す
+    const jsonStart = text.indexOf('{');
+    const jsonEnd = text.lastIndexOf('}') + 1;
+    
+    if (jsonStart === -1 || jsonEnd === 0) {
+      console.error('JSON structure not found in response:', text);
+      throw new Error('Invalid response format: JSON structure not found');
+    }
+
+    // JSON部分を抽出
+    const jsonStr = text.slice(jsonStart, jsonEnd);
+    
+    try {
+      // JSON文字列をパースして型チェック
+      const plan = JSON.parse(jsonStr) as TravelPlan;
+      
+      // 必須フィールドの存在チェック
+      if (!plan.plan_overview || !plan.spots || !plan.schedule) {
+        throw new Error('Missing required fields in travel plan');
+      }
+
+      return plan;
+    } catch (parseError: unknown) {
+      console.error('JSON Parse Error:', parseError);
+      console.error('Attempted to parse:', jsonStr);
+      const errorMessage = parseError instanceof Error ? parseError.message : 'Unknown parse error';
+      throw new Error(`Failed to parse JSON: ${errorMessage}`);
+    }
+  } catch (error) {
+    console.error('Travel Plan Parse Error:', error);
+    console.error('Full Response:', response.content);
+    throw error;
   }
 }
