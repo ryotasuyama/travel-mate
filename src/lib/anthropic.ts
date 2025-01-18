@@ -77,17 +77,47 @@ export function parseTravelPlanResponse(response: Anthropic.Message): TravelPlan
 
     console.log('Extracted text:', text);
 
-    // JSONの開始位置と終了位置を探す
-    const jsonStart = text.indexOf('{');
-    const jsonEnd = text.lastIndexOf('}') + 1;
-    
-    if (jsonStart === -1 || jsonEnd === 0) {
-      console.error('JSON structure not found in response:', text);
-      throw new Error('Invalid response format: JSON structure not found');
-    }
+    // テキストからJSONを抽出する関数
+    const extractJSON = (text: string): string => {
+      // 最初の{から最後の}までを抽出
+      const jsonStart = text.indexOf('{');
+      const jsonEnd = text.lastIndexOf('}') + 1;
+      
+      if (jsonStart === -1 || jsonEnd === 0) {
+        console.error('JSON structure not found in response:', text);
+        throw new Error('Invalid response format: JSON structure not found');
+      }
 
-    // JSON部分を抽出
-    const jsonStr = text.slice(jsonStart, jsonEnd);
+      // JSON部分を抽出
+      const potentialJson = text.slice(jsonStart, jsonEnd);
+      
+      try {
+        // 抽出したテキストが有効なJSONかテスト
+        JSON.parse(potentialJson);
+        return potentialJson;
+      } catch {
+        // 最初の試行が失敗した場合、別のJSONブロックを探す
+        const matches = text.match(/\{(?:[^{}]|(\{[^{}]*\}))*\}/g);
+        if (!matches) {
+          throw new Error('No valid JSON found in response');
+        }
+        
+        // 見つかったJSONブロックを検証
+        for (const match of matches) {
+          try {
+            JSON.parse(match);
+            return match;
+          } catch {
+            continue;
+          }
+        }
+        
+        throw new Error('No valid JSON structure found in response');
+      }
+    };
+
+    // JSON文字列を抽出
+    const jsonStr = extractJSON(text);
     
     try {
       // JSON文字列をパースして型チェック
