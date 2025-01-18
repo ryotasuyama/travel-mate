@@ -4,11 +4,6 @@ import { Select, RadioGroup } from '../../travel/shared';
 import { FormSectionProps } from './types';
 
 const PREFECTURES = [
-<<<<<<< HEAD
-  { value: 'tokyo', label: '東京都' },
-  { value: 'osaka', label: '大阪府' },
-  // TODO: 他の都道府県を追加
-=======
   { value: 'hokkaido', label: '北海道' },
   { value: 'aomori', label: '青森県' },
   { value: 'iwate', label: '岩手県' },
@@ -56,7 +51,6 @@ const PREFECTURES = [
   { value: 'miyazaki', label: '宮崎県' },
   { value: 'kagoshima', label: '鹿児島県' },
   { value: 'okinawa', label: '沖縄県' },
->>>>>>> efcb2161a46d263f9ad2ea35e12255d6ec9398de
 ];
 
 const GENDER_OPTIONS = [
@@ -65,15 +59,9 @@ const GENDER_OPTIONS = [
   { value: 'other', label: 'その他' },
 ];
 
-<<<<<<< HEAD
-const PEOPLE_COUNT_OPTIONS = Array.from({ length: 20 }, (_, i) => ({
-  value: String(i + 1),
-  label: `${i + 1}人`
-=======
 const PEOPLE_COUNT_OPTIONS = Array.from({ length: 10 }, (_, i) => ({
  value: String(i + 1),
  label: `${i + 1}人`
->>>>>>> efcb2161a46d263f9ad2ea35e12255d6ec9398de
 }));
 
 const DURATION_OPTIONS = [
