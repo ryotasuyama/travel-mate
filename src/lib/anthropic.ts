@@ -1,34 +1,21 @@
 import { TravelFormInput, TravelPlan } from '@/types/travel';
 import { Anthropic } from '@anthropic-ai/sdk';
 
-interface MessageContent {
-  type: string;
-  text?: string;
-}
-
-interface Message {
-  id: string;
-  content: MessageContent[];
-  role: string;
-  model: string;
-}
-
-type MessageContentText = {
-  type: 'text';
-  text: string;
-};
-
 export function generateTravelPrompt(input: TravelFormInput): string {
   return `あなたは旅行プランを提案する専門家です。
 以下の条件に基づいて、具体的な観光スポットとタイムスケジュールを提案してください。
-提案は必ず指定されたJSONフォーマットで出力してください。
-選択された交通手段に応じて、現実的な移動時間を考慮してください。
-予算内で実現可能なプランを提案してください。
+
+重要な注意事項：
+1. 回答は必ず有効なJSONフォーマットで出力してください
+2. JSONの前後に説明文や追加のテキストを含めないでください
+3. 選択された交通手段に応じて、現実的な移動時間を考慮してください
+4. 予算内で実現可能なプランを提案してください
+5. すべての必須フィールドを含めてください
 
 旅行条件:
 ${JSON.stringify(input, null, 2)}
 
-以下の形式でJSONを出力してください：
+出力するJSONの形式：
 {
   "plan_overview": {
     "title": "プランタイトル",
@@ -70,15 +57,25 @@ ${JSON.stringify(input, null, 2)}
 }`;
 }
 
-export function parseTravelPlanResponse(response: Message): TravelPlan {
+export function parseTravelPlanResponse(response: Anthropic.Message): TravelPlan {
   try {
-    // レスポンスから必要なテキスト部分を取得
-    const text = response.content.filter((block: MessageContent): block is MessageContentText => 
-      block.type === 'text'
-    )[0]?.text;
+    // レスポンスの内容を確認
+    console.log('Parsing response:', JSON.stringify(response, null, 2));
+
+    // テキストコンテンツの抽出
+    let text = '';
+    for (const content of response.content) {
+      if (content.type === 'text') {
+        text += content.text;
+      }
+    }
+
     if (!text) {
+      console.error('No text content found in response');
       throw new Error('No text content found in response');
     }
+
+    console.log('Extracted text:', text);
 
     // JSONの開始位置と終了位置を探す
     const jsonStart = text.indexOf('{');
