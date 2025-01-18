@@ -59,7 +59,7 @@ const GENDER_OPTIONS = [
  { value: 'other', label: 'その他' },
 ];
 
-const PEOPLE_COUNT_OPTIONS = Array.from({ length: 20 }, (_, i) => ({
+const PEOPLE_COUNT_OPTIONS = Array.from({ length: 10 }, (_, i) => ({
  value: String(i + 1),
  label: `${i + 1}人`
 }));
