@@ -4,6 +4,7 @@ import { TravelFormInput, TravelPlan, APIError } from '@/types/travel';
 import { validateTravelInput } from '@/utils/validation';
 import { generateTravelPrompt, parseTravelPlanResponse } from '@/lib/anthropic';
 
+export const runtime = 'edge';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -11,7 +12,6 @@ const anthropic = new Anthropic({
 
 export async function POST(request: Request) {
   try {
-    // APIキーの確認
     if (!process.env.ANTHROPIC_API_KEY) {
       console.error('ANTHROPIC_API_KEY is not set');
       return NextResponse.json<APIError>({
@@ -22,6 +22,9 @@ export async function POST(request: Request) {
         }
       }, { status: 500 });
     }
+
+    const controller = new AbortController();
+    setTimeout(() => controller.abort(), 60000);
 
     console.log('Starting travel plan generation...');
     const input: TravelFormInput = await request.json();
