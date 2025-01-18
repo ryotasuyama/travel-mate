@@ -63,7 +63,7 @@ const MONTHS = Array.from({ length: 12 }, (_, i) => ({
   label: `${i + 1}月`
 }));
 
-const BUDGET_OPTIONS = Array.from({ length: 100 }, (_, i) => ({
+const BUDGET_OPTIONS = Array.from({ length: 50 }, (_, i) => ({
   value: String((i + 1) * 10000),
   label: `${i + 1}万円`
 }));
