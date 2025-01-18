@@ -4,6 +4,7 @@ import { TravelFormInput, TravelPlan, APIError } from '@/types/travel';
 import { validateTravelInput } from '@/utils/validation';
 import { generateTravelPrompt, parseTravelPlanResponse } from '@/lib/anthropic';
 
+export const runtime = 'edge';
 
 const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
@@ -22,6 +23,9 @@ export async function POST(request: Request) {
         }
       }, { status: 500 });
     }
+
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 60000);
 
     console.log('Starting travel plan generation...');
     const input: TravelFormInput = await request.json();
