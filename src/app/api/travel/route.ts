@@ -12,7 +12,6 @@ const anthropic = new Anthropic({
 
 export async function POST(request: Request) {
   try {
-    // APIキーの確認
     if (!process.env.ANTHROPIC_API_KEY) {
       console.error('ANTHROPIC_API_KEY is not set');
       return NextResponse.json<APIError>({
@@ -25,7 +24,7 @@ export async function POST(request: Request) {
     }
 
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 60000);
+    setTimeout(() => controller.abort(), 60000);
 
     console.log('Starting travel plan generation...');
     const input: TravelFormInput = await request.json();
