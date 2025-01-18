@@ -58,13 +58,34 @@ export function parseTravelPlanResponse(response: Message): TravelPlan {
     // レスポンスから必要なテキスト部分を取得
     const text = response.content.filter(block => block.type === 'text')[0]?.text;
     if (!text) {
-      throw new Error('No text content found in response');
+      throw new Error('レスポンスにテキストコンテンツが見つかりません');
     }
-    // JSON文字列をパースして型チェック
-    const plan = JSON.parse(text) as TravelPlan;
-    return plan;
-  } catch {
-    console.error('Failed to parse travel plan response:');
-    throw new Error('Failed to parse travel plan response');
+
+    // JSONの開始位置と終了位置を特定
+    const jsonStart = text.indexOf('{');
+    const jsonEnd = text.lastIndexOf('}') + 1;
+    
+    if (jsonStart === -1 || jsonEnd === 0) {
+      throw new Error('レスポンス内にJSON形式のデータが見つかりません');
+    }
+
+    // JSON部分を抽出してパース
+    const jsonText = text.slice(jsonStart, jsonEnd);
+    try {
+      const plan = JSON.parse(jsonText) as TravelPlan;
+      
+      // 必須フィールドの存在チェック
+      if (!plan.plan_overview || !plan.spots || !plan.schedule) {
+        throw new Error('必須フィールドが不足しています');
+      }
+
+      return plan;
+    } catch (parseError) {
+      console.error('JSONパースエラー:', parseError);
+      throw new Error(`JSONのパースに失敗しました: ${(parseError as Error).message}`);
+    }
+  } catch (error) {
+    console.error('Travel plan response parsing error:', error);
+    throw error;
   }
 }
