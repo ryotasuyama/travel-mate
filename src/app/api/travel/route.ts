@@ -43,18 +43,41 @@ export async function POST(request: Request) {
 
     // Anthropic APIリクエスト
     console.log('Sending request to Anthropic API...');
-    const response = await anthropic.messages.create({
-      model: "claude-3-sonnet-20240229",
-      max_tokens: 4096,
-      messages: [
-        { 
-          role: 'user', 
-          content: prompt 
+    let response;
+    try {
+      response = await anthropic.messages.create({
+        model: "claude-3-sonnet-20240229",
+        max_tokens: 4096,
+        messages: [
+          { 
+            role: 'user', 
+            content: prompt 
+          }
+        ],
+        temperature: 0.5,
+        system: "あなたは旅行プランを提案する専門家です。必ず指定されたJSONフォーマットで回答してください。JSONの前後に説明文を含めないでください。"
+      });
+    } catch (apiError) {
+      console.error('Anthropic API Error:', apiError);
+      return NextResponse.json<APIError>({
+        error: {
+          type: 'api_error',
+          message: 'AI APIでエラーが発生しました',
+          suggestions: ['しばらく時間をおいて再度お試しください']
         }
-      ],
-      temperature: 0.5, // より決定論的な応答を得るために温度を下げる
-      system: "あなたは旅行プランを提案する専門家です。必ず指定されたJSONフォーマットで回答してください。JSONの前後に説明文を含めないでください。"
-    });
+      }, { status: 500 });
+    }
+
+    if (!response || !response.content || response.content.length === 0) {
+      console.error('Invalid API response structure:', response);
+      return NextResponse.json<APIError>({
+        error: {
+          type: 'invalid_response',
+          message: 'AIからの応答が不正です',
+          suggestions: ['もう一度お試しください']
+        }
+      }, { status: 500 });
+    }
 
     console.log('Received response from Anthropic API:', JSON.stringify(response, null, 2));
 
