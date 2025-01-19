@@ -10,7 +10,7 @@ export function generateTravelPrompt(input: TravelFormInput): string {
 2. JSONの前後に説明文や追加のテキストを含めないでください
 3. 選択された交通手段に応じて、現実的な移動時間を考慮してください
 4. 予算内で実現可能なプランを提案してください
-5. すべての必須フィールドを含めてください
+5. 実在するスポットや店を挙げてください。
 
 旅行条件:
 ${JSON.stringify(input, null, 2)}
