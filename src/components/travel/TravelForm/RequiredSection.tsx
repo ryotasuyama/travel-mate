@@ -146,8 +146,9 @@ export const RequiredSection: React.FC<FormSectionProps> = ({
           onUpdate({
             duration: {
               nights: nights,
-              days: nights + 1
-            }
+              days: nights === 0 ? 1 : nights + 1
+            },
+            ...(nights === 0 ? { accommodation: 'none' } : {})
           });
         }}
         options={DURATION_OPTIONS}
@@ -163,14 +164,16 @@ export const RequiredSection: React.FC<FormSectionProps> = ({
         name="transportation"
       />
 
-      <RadioGroup
-        label="宿泊施設タイプ"
-        value={formData.accommodation}
-        onChange={(value) => onUpdate({ accommodation: value as 'hotel' | 'ryokan' | 'none' })}
-        options={ACCOMMODATION_OPTIONS}
-        required
-        name="accommodation"
-      />
+      {formData.duration.nights > 0 && (
+        <RadioGroup
+          label="宿泊施設タイプ"
+          value={formData.accommodation}
+          onChange={(value) => onUpdate({ accommodation: value as 'hotel' | 'ryokan' | 'none' })}
+          options={ACCOMMODATION_OPTIONS}
+          required
+          name="accommodation"
+        />
+      )}
     </div>
   );
 };

@@ -16,8 +16,8 @@ const initialFormState: TravelFormInput = {
    children: 0
  },
  duration: {
-   nights: 1,
-   days: 2
+   nights: 0,
+   days: 1
  },
  transportation: 'public',
  accommodation: 'hotel'
@@ -41,11 +41,11 @@ const TravelForm: React.FC<TravelFormProps> = ({ onPlanGenerated }) => {
      formData.group.adults,    // 大人の人数
      formData.duration.nights, // 泊数
      formData.transportation,  // 交通手段
-     formData.accommodation,   // 宿泊施設タイプ
+     ...(formData.duration.nights > 0 ? [formData.accommodation] : []),   // 宿泊施設タイプ（宿泊ありの場合のみ）
    ];
 
    const isValid = requiredFields.every(field => 
-     field !== undefined && field !== '' && field !== 0
+     field !== undefined && field !== '' && (typeof field === 'number' ? field >= 0 : true)
    );
 
    if (!isValid) {
